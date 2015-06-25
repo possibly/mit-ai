@@ -23,7 +23,7 @@
 #   3. Python v3.0
 # Fill in your answer in the next line of code ("1", "2", or "3"):
 
-ANSWER_1 = 'fill-me-in'
+ANSWER_1 = '2'
 
 
 # Section 2: Programming warmup _____________________________________________
@@ -31,26 +31,49 @@ ANSWER_1 = 'fill-me-in'
 # Problem 2.1: Warm-Up Stretch
 
 def cube(x):
-    raise NotImplementedError
+  return x * x * x
 
 def factorial(x):
-    raise NotImplementedError
+  if x < 0:
+    raise Exception, 'factorial: n must be greater than 0'
+  for y in range(2,x):
+    x *= y
+  return x
 
 def count_pattern(pattern, lst):
-    raise NotImplementedError
-
+  match = 0
+  if len(pattern) > len(lst):
+    return match
+  while len(pattern) <= len(lst):
+    if cmp(pattern,lst[0:len(pattern)]) == 0:
+      match+=1
+    lst = lst[1:]
+  return match
 
 # Problem 2.2: Expression depth
 
 def depth(expr):
-    raise NotImplementedError
-
+  complexity = 0
+  if not isinstance(expr, (list,tuple)):
+    return 0
+  else:
+    if isinstance(expr[1], (list,tuple)) and isinstance(expr[2], (list,tuple)):
+      complexity += depth(expr[1]) + depth(expr[2])
+    else:
+      complexity += depth(expr[1]) + depth(expr[2]) + 1
+  return complexity
 
 # Problem 2.3: Tree indexing
 
 def tree_ref(tree, index):
-    raise NotImplementedError
-
+  # Assume tree exists
+  if index:
+    if len(tree) > index[0]:
+      return tree_ref(tree[index[0]],index[1:])
+    else:
+      raise Exception, 'tree_ref: That index is not in this tree! Failed index: '+index[0]
+  else:
+    return tree
 
 # Section 3: Symbolic algebra
 
