@@ -17,7 +17,7 @@ from production import IF, AND, OR, NOT, THEN, forward_chain
 #    2. the consequent
 #    3. both
 
-ANSWER_1 = 'your answer here'
+ANSWER_1 = '2'
 
 # A rule-based system about Monty Python's "Dead Parrot" sketch
 # uses the following rules:
@@ -37,10 +37,10 @@ ANSWER_1 = 'your answer here'
 
 # Will this system produce the datum 'Polly is pining for the
 # fjords'?  Answer 'yes' or 'no'.
-ANSWER_2 = 'your answer here'
+ANSWER_2 = 'no'
 
 # Which rule contains a programming error? Answer '1' or '2'.
-ANSWER_3 = 'your answer here'
+ANSWER_3 = '2'
 
 # If you're uncertain of these answers, look in tests.py for an
 # explanation.
@@ -69,11 +69,11 @@ ANSWER_3 = 'your answer here'
 # what is asked.  After we start the system running, which rule
 # fires first?
 
-ANSWER_4 = 'your answer here'
+ANSWER_4 = '1'
 
 # Which rule fires second?
 
-ANSWER_5 = 'your answer here'
+ANSWER_5 = '0'
 
 
 # Problem 1.3.1: Poker hands
@@ -90,10 +90,10 @@ poker_data = ( 'two-pair beats pair',
 # which poker hands beat which, transitively. For example, it
 # should be able to deduce that a three-of-a-kind beats a pair,
 # because a three-of-a-kind beats two-pair, which beats a pair.
-transitive_rule = IF( AND(), THEN() )
+transitive_rule = IF( AND('(?x) beats (?y)', '(?z) beats (?x)'), THEN('(?z) beats (?y)') )
 
 # You can test your rule like this:
-# print forward_chain([transitive_rule], poker_data)
+# print forward_chain([transitive_rule], poker_data, verbose=True)
 
 # Here's some other data sets for the rule. The tester uses
 # these, so don't change them.
@@ -112,9 +112,103 @@ TEST_RESULTS_TRANS2 = forward_chain([transitive_rule],
 # able to refer to the rules by name and easily rearrange them if
 # you need to.
 
+sameidentity = IF (
+                    AND   ( '(?x) (?y)' ),
+                    THEN  ( 'sameidentity (?y) (?y)' )
+                  )
+son = IF  (
+            AND   ( 
+                    'parent (?x) (?y)', 
+                    'male (?y)',
+                  ),
+            THEN  ( 'son (?y) (?x)' )
+          )
+daughter =  IF  (
+              AND   ( 
+                      'parent (?x) (?y)', 
+                      'female (?y)',
+                    ),
+              THEN  ( 'daughter (?y) (?x)' )
+          )
+father =  IF  (
+                AND   ( 
+                        OR  (
+                              'son (?x) (?y)',
+                              'daughter (?x) (?y)',
+                            ),
+                        'male (?y)',
+                      ),
+                THEN  ( 'father (?y) (?x)' )
+              )
+mother =  IF  (
+                AND   ( 
+                        OR  (
+                              'son (?x) (?y)',
+                              'daughter (?x) (?y)',
+                            ),
+                        'female (?y)',
+                      ),
+                THEN  ( 'mother (?y) (?x)' )
+              )
+grandparent =  IF  (
+                      AND   ( 
+                              'parent (?x) (?y)',
+                              OR  (
+                                    'son (?x) (?z)',
+                                    'daughter (?x) (?z)',
+                                  ),
+                            ),
+                      THEN  ( 'grandparent (?z) (?y)' )
+                    ) 
+grandchild =  IF  (
+                    AND   ( 
+                            'grandparent (?x) (?y)'
+                          ),
+                    THEN  ( 'grandchild (?y) (?x)' )
+                  )
+brother = IF  (
+                AND   (
+                        'son (?x) (?y)',
+                        OR  (
+                              'daughter (?z) (?y)',
+                              'son (?z) (?y)',
+                            ),
+                        NOT   ( 'sameidentity (?x) (?z)' ),
+                      ),
+                THEN  ( 'brother (?x) (?z)' )
+              )
+sister = IF  (
+                AND   (
+                        'daughter (?x) (?y)',
+                        OR  (
+                              'daughter (?z) (?y)',
+                              'son (?z) (?y)',
+                            ),
+                        NOT   ( 'sameidentity (?x) (?z)' ),
+                      ),
+                THEN  ( 'sister (?x) (?z)' )
+              )
+cousin = IF   (
+                AND   (
+                        OR  (
+                              'son (?x) (?y)',
+                              'daughter (?x) (?y)'
+                            ),
+                        OR  (
+                              'brother (?z) (?y)',
+                              'sister (?z) (?y)'
+                            ),
+                        OR  (
+                              'son (?a) (?z)',
+                              'daughter (?a) (?z)'
+                            ),
+                      ),
+                THEN  ( 'cousin (?a) (?x)' )
+              )
+
 # Then, put them together into a list in order, and call it
 # family_rules.
-family_rules = [ ]                    # fill me in
+family_rules = [sameidentity,son,daughter,father,mother,grandparent,grandchild,brother,sister,cousin] # fill me in
 
 # Some examples to try it on:
 # Note: These are used for testing, so DO NOT CHANGE
@@ -213,7 +307,7 @@ from backchain import backchain_to_goal_tree
 ##; Section 3: Survey ##
 # Please answer these questions inside the double quotes.
 
-HOW_MANY_HOURS_THIS_PSET_TOOK = ''
-WHAT_I_FOUND_INTERESTING = ''
-WHAT_I_FOUND_BORING = ''
+HOW_MANY_HOURS_THIS_PSET_TOOK = 'not necessary'
+WHAT_I_FOUND_INTERESTING = 'not necessary'
+WHAT_I_FOUND_BORING = 'not necessary'
 
